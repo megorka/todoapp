@@ -21,12 +21,13 @@ type Router struct {
 
 func NewRouter(cfg Config, h *Handler) *Router {
 	r := mux.NewRouter()
-	
-	r.HandleFunc("/api/v1/signup", h.SendUserCreatedEvent).Methods("POST")
-
-	return &Router{config: cfg, Router: r}
+	r.HandleFunc("/api/test", h.HealthCheck).Methods("POST")
+	return &Router{
+		config: cfg,
+		Router: r,
+	}
 }
 
 func (r *Router) Run() {
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", r.config.Host, r.config.Port), r.Router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", r.config.Host, r.config.Port), nil))
 }

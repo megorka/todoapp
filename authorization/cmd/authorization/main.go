@@ -1,8 +1,6 @@
-package authorization
+package main
 
 import (
-	"os"
-
 	"github.com/megorka/todoapp/authorization/config"
 	"github.com/megorka/todoapp/authorization/service"
 	router "github.com/megorka/todoapp/authorization/transport/http"
@@ -13,7 +11,7 @@ func main() {
 
 	cfg := config.NewConfig()
 
-	kafkaProducer := kafka.NewKafkaProducer([]string{os.Getenv("Kafkahost")}, "user-creation")
+	kafkaProducer := kafka.NewKafkaProducer([]string{"localhost:9092"}, "user-creation")
 
 	service := service.NewService(kafkaProducer)
 
