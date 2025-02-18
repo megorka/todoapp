@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 
 	"github.com/megorka/todoapp/user_service/config"
@@ -28,11 +27,11 @@ func main() {
 
 	service := service.NewService(repository)
 
-	go func(){
-		log.Println("Starting Kafka consumer...")
-		ctx := context.Background()
-		service.HandleUserCreation(ctx)
-	}()
+	// go func(){
+	// 	log.Println("Starting Kafka consumer...")
+	// 	ctx := context.Background()
+	// 	service.HandleUserCreation(ctx)
+	// }()
 
 	handler := router.NewHandler(service)
 

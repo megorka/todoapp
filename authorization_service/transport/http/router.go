@@ -19,10 +19,11 @@ type Router struct {
 	Handler Handler
 }
 
-func NewRouter(cfg Config, h *Handler) *Router {
+func NewRouter(cfg Config, h Handler) *Router {
 	r := mux.NewRouter()
 	
-	r.HandleFunc("/api/v1/signup", h.SendUserCreatedEvent).Methods("POST")
+	r.HandleFunc("/api/v1/signup", h.RegisterUserHandler).Methods("POST")
+	r.HandleFunc("/api/v1/login", h.Login).Methods("POST")
 
 	return &Router{config: cfg, Router: r}
 }

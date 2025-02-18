@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	"github.com/megorka/todoapp/user_service/models"
 )
 
 type Repository struct {
@@ -40,4 +42,16 @@ func (repo *Repository) CreateUser(username, email, password string) error {
 		return fmt.Errorf("CreateUser: %w", err)
 	}
 	return nil
+}
+
+func (r *Repository) GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
+	query := `SELECT id, username, email, password FROM users WHERE email = $1`
+	if err := r.db.QueryRow(query, email).Scan(&user.ID, &user.Username,&user.Email, &user.Password,); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("user not found")
+		}
+		return nil, fmt.Errorf("failed to fetch user: %w", err)
+	}
+	return &user, nil
 }
