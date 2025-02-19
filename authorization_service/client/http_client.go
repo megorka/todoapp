@@ -68,7 +68,7 @@ func (c *Client) GetUserByEmail(ctx context.Context, email string) (*models.User
 	url := "http://localhost:8181/api/v1/user/" + email
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Failed create request: %w", err)
+		return nil, fmt.Errorf("failed create request: %w", err)
 	}
 	
 	resp, err := c.client.Do(req)
@@ -83,7 +83,7 @@ func (c *Client) GetUserByEmail(ctx context.Context, email string) (*models.User
 	}
 	var user models.User
 	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-		return nil, fmt.Errorf("Failed to decode: %w", err)
+		return nil, fmt.Errorf("failed to decode: %w", err)
 	}
 
 	return &user, nil

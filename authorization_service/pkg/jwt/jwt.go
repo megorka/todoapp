@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"os"
 	"strconv"
 	"time"
 
@@ -8,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtKey = []byte("a99aca380883ecc5438bc3c6afa91a3bbdc9b921cd350677e1d23971eabf35661d3d1752890dab9644ef6bed173600b235d97c82b76a68a3162fdf147995cf6f6d212125da8bc1c0ad3340ea212b5d7dddd5d8a55c4a0b125bf83e1a53aa5dd4dcad7a553f80bfaecfc7085225aaf5a831e69e531f072334d58106629345a501")
+var jwtKey = []byte(os.Getenv("JWT_KEY"))
 func HashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
