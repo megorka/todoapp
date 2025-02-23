@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -31,11 +32,12 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.service.CreateUser(req.Username, req.Email, req.Password); err != nil {
+		fmt.Println(err)
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		log.Printf("Received signup request: username=%s, email=%s, password=%s", req.Username, req.Email, req.Password)
 		return
 	}
-	
+
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "User successfuly created"})
 }
@@ -52,17 +54,23 @@ func (h *Handler) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
 	user, err := h.service.GetUserByEmail(email)
 	if err != nil {
 		log.Printf("Failed to get user by email: %v", err)
-    if err.Error() == "user not found" {
-      http.Error(w, "User not found", http.StatusNotFound)
-      return
-    }
-    http.Error(w, "Internal server error", http.StatusInternalServerError)
-    return
+		if err.Error() == "user not found" {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
+
+	if user.Email == "" {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-  if err := json.NewEncoder(w).Encode(user); err != nil {
+	if err := json.NewEncoder(w).Encode(user); err != nil {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 		return
-  }
+	}
 }

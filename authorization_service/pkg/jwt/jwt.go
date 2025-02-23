@@ -10,6 +10,7 @@ import (
 )
 
 var jwtKey = []byte(os.Getenv("JWT_KEY"))
+
 func HashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -39,28 +40,23 @@ func CreateToken(userID int) (string, error) {
 	return tokenString, nil
 }
 
-func ParseToken(tokenString string) (int, string, error) {
+func ParseToken(tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
 	if err != nil {
-		return 0, "", err
+		return "", err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
-		return 0, "", err
+		return "", err
 	}
 
-	userID, ok := claims["user_id"].(int)
+	userID, ok := claims["user_id"].(string)
 	if !ok {
-		return 0, "", err
+		return "", err
 	}
 
-	userRole, ok := claims["userRole"].(string)
-	if !ok {
-		return 0, "", err
-	}
-
-	return userID, userRole, nil
+	return userID, nil
 }
